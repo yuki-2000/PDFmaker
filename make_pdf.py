@@ -1,5 +1,6 @@
 import img2pdf
 from pathlib import Path
+import re
 
 #単処理
 def ImageToPdf(outputpath, imagepath):
@@ -8,12 +9,17 @@ def ImageToPdf(outputpath, imagepath):
     imagepath: pathlib.Path()
     '''
     lists = list(imagepath.glob("**/*"))#単フォルダ内を検索
+    #jpg,pngファイルだけpdfに結合
+    #Pathlib.WindowsPath()をstring型に変換しないとエラー
+    #jpegにも対応
+    imgpath_list = [str(i) for i in lists if i.match("*.jpg") or i.match("*.png") or i.match("*.jpeg")]
+    #https://note.nkmk.me/python-sort-num-str/
+    #0埋めされていない番号順に対応
+    imgpath_list.sort(key=lambda s: int(re.findall(r'\d+', s)[-1]))
+    
     #pdfを作成
     with open(outputpath,"wb") as f:
-        #jpg,pngファイルだけpdfに結合
-        #Pathlib.WindowsPath()をstring型に変換しないとエラー
-        #jpegにも対応
-        f.write(img2pdf.convert([str(i) for i in lists if i.match("*.jpg") or i.match("*.png") or i.match("*.jpeg")]))
+        f.write(img2pdf.convert(imgpath_list))
     print(outputpath.name + " :Done")
 
 #複数フォルダをループ処理する
