@@ -37,4 +37,6 @@ while True:
         try:
             ImageToPdf(outputpath,imagepath)
         except:
-            pass
+            import traceback
+            traceback.print_exc()
+
