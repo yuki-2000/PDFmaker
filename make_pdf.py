@@ -12,13 +12,15 @@ def ImageToPdf(outputpath, imagepath):
     with open(outputpath,"wb") as f:
         #jpg,pngファイルだけpdfに結合
         #Pathlib.WindowsPath()をstring型に変換しないとエラー
-        f.write(img2pdf.convert([str(i) for i in lists if i.match("*.jpg") or i.match("*.png")]))
+        #jpegにも対応
+        f.write(img2pdf.convert([str(i) for i in lists if i.match("*.jpg") or i.match("*.png") or i.match("*.jpeg")]))
     print(outputpath.name + " :Done")
 
 #複数フォルダをループ処理する
-def main():
+while True:
     #作業フォルダ
-    base_path = r"your work folder path"
+    base_path = input("PDFに変換したいファルダが入った親フォルダをd&Pしてください")
+    base_path = base_path.strip(" \' ")
     #作業フォルダ内のディレクトリだけを抽出する
     glob = Path(base_path).glob("*")
     imagefolderlist = list([item for item in list(glob) if item.is_dir()])
