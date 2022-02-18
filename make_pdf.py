@@ -15,6 +15,21 @@ def extract_num(s, ret=0):
     else:
         return ret
 
+    
+#https://zenn.dev/tamanobi/articles/88dacd450f8405c9a5a9
+def img2bytes(img_path):
+    img = Image.open(img_path)
+    
+    #アルファチャンネルをPDFのソフトマスクで再現するならコメントアウト、
+    pngのアルファチャンネルを削除するならRGBへ変換
+    #img = img.convert('RGB')
+    
+    
+    img_bytes = io.BytesIO()
+    img.save(img_bytes, format='PNG')
+    return img_bytes.getvalue()  # これが bytes
+
+
 
 #単処理
 def ImageToPdf(outputpath, imagepath):
@@ -31,10 +46,11 @@ def ImageToPdf(outputpath, imagepath):
     #https://note.nkmk.me/python-sort-num-str/
     #0埋めされていない番号順に対応
     imgpath_list.sort(key=lambda s: extract_num(s))
+    img_bytes_list = [img2bytes(i) for i in img_path_list]
     
     #pdfを作成
     with open(outputpath,"wb") as f:
-        f.write(img2pdf.convert(imgpath_list))
+        f.write(img2pdf.convert(img_bytes_list))
     print(outputpath.name + " :Done")
 
 #複数フォルダをループ処理する
